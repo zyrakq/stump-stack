@@ -1,0 +1,28 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: ${LOG_MAX_SIZE:-10m}
+    max-file: ${LOG_MAX_FILE:-3}
+    compress: ${LOG_COMPRESS:-true}
+
+services:
+  stump:
+    container_name: stump
+    image: ${IMAGE:-aaronleopold/stump:latest}
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      STUMP_ENABLE_UPLOAD: ${STUMP_ENABLE_UPLOAD:-true}
+      UPLOAD_FILE: ${UPLOAD_FILE:-true}
+      DOWNLOAD_FILE: ${DOWNLOAD_FILE:-true}
+    volumes:
+      - stump-config:/config
+      - stump-data:/data
+
+volumes:
+  stump-config:
+    name: stump-config
+  stump-data:
+    name: stump-data
